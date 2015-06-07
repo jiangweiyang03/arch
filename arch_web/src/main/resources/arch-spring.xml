@@ -61,7 +61,7 @@
 	<!-- MyBatis configuation -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="classpath*:com/yousoft/mapper/**/*Mapper.xml" />
+		<property name="mapperLocations" value="classpath*:com/yousoft/mapper/**/*.xml" />
 	</bean>
 
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
@@ -105,7 +105,7 @@
 	<!-- 导入activiti流程引擎配置 -->
 	<import resource="arch-process.xml" />
 	
-	<!-- 导入security授权配置 -->
 	<import resource="arch-security.xml" />
+	
 
 </beans>

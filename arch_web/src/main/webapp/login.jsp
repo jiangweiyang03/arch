@@ -16,20 +16,20 @@
 <script type="text/javascript" src="widgets/js/login/login.js"></script>
 </head>
 <body>
-	<form class="form-signin" role="form">
+	<form class="form-signin" role="form" id="loginform" action="j_spring_security_check" method="post">
 		<fieldset>
 			<legend>EAS系统登录</legend>
 			<div class="form-group">
 				<label class="control-label" for="userCode">用户名</label>
 				<div>
-					<input type="text" id="userCode" class="form-control"
+					<input type="text" id="userCode" class="form-control" name="j_username"
 						placeholder="请输入登录用户名..." />
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="control-label" for="userPass">密码</label>
 				<div>
-					<input type="password" id="userPass" class="form-control"
+					<input type="password" id="userPass" class="form-control" name="j_password"
 						placeholder="请输入登录用户名..." />
 				</div>
 			</div>

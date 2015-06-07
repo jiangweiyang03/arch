@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,17 +17,25 @@ import com.yousoft.model.security.view.SecurityUser;
 import com.yousoft.service.security.AuthService;
 
 public class ArchUserDetailServiceImpl implements UserDetailsService {
+	/**日志记录对象**/
+	private static Logger logger = LoggerFactory.getLogger(ArchUserDetailServiceImpl.class);
 
 	@Autowired
 	private AuthService authService;
+	
 
-	@Override
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
+		logger.info("loadUserByUserName,username:"+username);
 		if (StringUtils.isNotEmpty(username)) {
 			// 传入的username不能Null
-			SecurityUser securityUser = authService
+			SecurityUser securityUser = null;
+			try{
+			securityUser = authService
 					.findSecurityUserByLoginCode(username);// 根据登录code查询用户信息对象
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 			if (securityUser == null) {
 				// 没有查询到满足条件的数据
 				throw new UsernameNotFoundException(username);

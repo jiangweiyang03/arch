@@ -18,6 +18,8 @@ $(function(){
 		        content: '密码不能为空'
 		    });
 		} else {
+			//验证成功之后，security请求认证
+			$("#loginform").submit();
 		}
 	});
 });

@@ -21,7 +21,9 @@
 		access-denied-page="/include/jsp/timeout.jsp">
 
 		<form-login login-page="/login.jsp" default-target-url='/system/default.jsp'
-			always-use-default-target="true" authentication-failure-url="/login.jsp?login_error=1" />
+			always-use-default-target="true" authentication-failure-url="/login.jsp?login_error=1"
+			authentication-success-handler-ref="successHandler" authentication-failure-handler-ref="failureHandler" />
+			
 		<logout invalidate-session="true" logout-success-url="/login.jsp"
 			logout-url="/j_spring_security_logout" />
 		<!-- 实现免登陆验证 -->
@@ -42,6 +44,11 @@
 			session-authentication-strategy-ref="sas" />
 
 	</http>
+	
+	<beans:bean id="successHandler" class="com.yousoft.service.security.impl.ArchSuccessHandler" />
+
+	<beans:bean id="failureHandler" class="com.yousoft.service.security.impl.ArchFailureHandler" />	
+	
 	<beans:bean id="sas"
 		class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
 		<beans:constructor-arg name="sessionRegistry"

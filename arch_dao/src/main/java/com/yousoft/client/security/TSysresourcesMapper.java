@@ -1,10 +1,13 @@
 package com.yousoft.client.security;
 
-import com.yousoft.model.security.TSysresources;
-import com.yousoft.model.security.TSysresourcesExample;
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import com.yousoft.model.security.TSysresources;
+import com.yousoft.model.security.TSysresourcesExample;
+import com.yousoft.model.security.view.ResRoleModel;
 
 @Repository
 public interface TSysresourcesMapper {
@@ -95,4 +98,5 @@ public interface TSysresourcesMapper {
      * @mbggenerated Tue Jun 02 21:20:20 CST 2015
      */
     int updateByPrimaryKey(TSysresources record);
+    
 }

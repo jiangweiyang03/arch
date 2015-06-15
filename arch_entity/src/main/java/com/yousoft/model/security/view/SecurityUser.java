@@ -12,7 +12,7 @@ public class SecurityUser {
 	
 	private String userName;
 	
-	private String userPass;
+	private String passWord;
 	
 	private int status;//帐号状态
 	
@@ -37,12 +37,18 @@ public class SecurityUser {
 		this.userName = userName;
 	}
 
-	public String getUserPass() {
-		return userPass;
+	/**
+	 * @return the passWord
+	 */
+	public String getPassWord() {
+		return passWord;
 	}
 
-	public void setUserPass(String userPass) {
-		this.userPass = userPass;
+	/**
+	 * @param passWord the passWord to set
+	 */
+	public void setPassWord(String passWord) {
+		this.passWord = passWord;
 	}
 
 	public int getStatus() {

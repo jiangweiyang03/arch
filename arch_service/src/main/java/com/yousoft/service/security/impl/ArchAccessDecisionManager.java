@@ -3,39 +3,60 @@ package com.yousoft.service.security.impl;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 
+@Service("archAccessDecisionManager")
 public class ArchAccessDecisionManager implements AccessDecisionManager {
 
 	@Override
 	public void decide(Authentication authentication, Object object,
 			Collection<ConfigAttribute> configAttributes)
 			throws AccessDeniedException, InsufficientAuthenticationException {
-		
-		if(configAttributes == null) {    
-            return;    
-        }    
-        //所请求的资源拥有的权限(一个资源对多个权限)    
-        Iterator<ConfigAttribute> iterator = configAttributes.iterator();    
-        while(iterator.hasNext()) {    
-            ConfigAttribute configAttribute = iterator.next();    
-            //访问所请求资源所需要的权限    
-            String needPermission = configAttribute.getAttribute();    
-            System.out.println("needPermission is " + needPermission);   
-            //用户所拥有的权限authentication    
-            for(GrantedAuthority ga : authentication.getAuthorities()) {    
-                if(needPermission.equals(ga.getAuthority())) {    
-                    return;    
-                }    
-            }    
-        }    
-        //没有权限    会跳转到login.jsp页面  
-        throw new AccessDeniedException(" 没有权限访问");    
+
+		if (configAttributes == null) {
+			return;
+		}
+		// 所请求的资源拥有的权限(一个资源对多个权限)
+		Iterator<ConfigAttribute> iterator = configAttributes.iterator();
+		ConfigAttribute configAttribute = null;
+		String needPermission = null;
+		String[] authorityArray = null;
+		String role = null;
+		String grantAuthorityStr = null;
+		while (iterator.hasNext()) {
+			configAttribute = iterator.next();
+			// 访问所请求资源所需要的权限
+			needPermission = configAttribute.getAttribute();
+			if (StringUtils.isNotEmpty(needPermission)) {
+				// 通过_对权限数据进行分割
+				authorityArray = needPermission.split("_");
+				System.out.println("needPermission is " + needPermission);
+				// 用户所拥有的权限authentication
+				if (authorityArray != null && authorityArray.length == 3) {
+					role = authorityArray[1];// 角色信息
+					for (GrantedAuthority grantedAuthority : authentication
+							.getAuthorities()) {
+						grantAuthorityStr = grantedAuthority.getAuthority();
+						if (role.equals(grantAuthorityStr)) {
+							return;
+						}
+					}
+				} else {
+					throw new AccessDeniedException("当前请求的权限配置错误");
+				}
+			} else {
+				return;
+			}
+
+		}
+		throw new AccessDeniedException(" 没有权限访问");
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package com.yousoft.client.security;
 
 import com.yousoft.model.security.TSysroleresource;
 import com.yousoft.model.security.TSysroleresourceExample;
+import com.yousoft.model.security.view.ResRoleModel;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -95,4 +97,11 @@ public interface TSysroleresourceMapper {
      * @mbggenerated Tue Jun 02 21:20:20 CST 2015
      */
     int updateByPrimaryKey(TSysroleresource record);
+    
+    
+    /**
+     * 查询数据库中目配置的角色资源控制信息
+     * @return 映射对象集合List
+     */
+    List<ResRoleModel> findAllResRoleModel();
 }

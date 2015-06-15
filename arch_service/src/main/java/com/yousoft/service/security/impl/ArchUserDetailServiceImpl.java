@@ -12,10 +12,12 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.yousoft.model.security.view.SecurityUser;
 import com.yousoft.service.security.AuthService;
 
+@Service
 public class ArchUserDetailServiceImpl implements UserDetailsService {
 	/**日志记录对象**/
 	private static Logger logger = LoggerFactory.getLogger(ArchUserDetailServiceImpl.class);
@@ -63,7 +65,7 @@ public class ArchUserDetailServiceImpl implements UserDetailsService {
 				        boolean accountNonExpired = true;  
 				        boolean credentialsNonExpired = true;  
 				        boolean accountNonLocked = true;  
-				        User userdetail = new User(String.valueOf(securityUser.getUserId()), securityUser.getUserPass(),  
+				        User userdetail = new User(String.valueOf(securityUser.getUserId()), securityUser.getPassWord(),
 				                enables, accountNonExpired, credentialsNonExpired,
 				                accountNonLocked, grantedAuths);  
 				        return userdetail;  

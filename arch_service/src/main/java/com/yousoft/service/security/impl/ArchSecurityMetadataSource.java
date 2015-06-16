@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.yousoft.service.security.ResourceService;
 import com.yousoft.service.util.ArchConstants;
 import com.yousoft.service.util.CacheService;
 
-@Service("archSecurityMetadataSource")
+@Component
 public class ArchSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 	/** 日志记录对象 **/
 	private static Logger logger = LoggerFactory
@@ -68,7 +68,6 @@ public class ArchSecurityMetadataSource implements FilterInvocationSecurityMetad
 		if (resourceMap == null && resourceService != null) {
 			//缓存数据中没有数据,从数据库中获取资源与角色的对应关系.
 			logger.info("findResourceRoleMap");
-			Assert.isNull(resourceService,"当前resourceService is null");
 			resourceMap = resourceService.findResourceRoleMap();
 		}
 		if (resourceMap == null || resourceMap.size()==0) {

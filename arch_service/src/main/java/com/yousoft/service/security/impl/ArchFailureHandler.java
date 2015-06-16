@@ -1,8 +1,6 @@
 package com.yousoft.service.security.impl;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,24 +9,35 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Service;
-
-import com.yousoft.service.util.ResponseUtil;
 
 public class ArchFailureHandler implements AuthenticationFailureHandler {
-	/**日志对象.**/
-	private static Logger logger = LoggerFactory.getLogger(ArchFailureHandler.class);
+	/** 日志对象. **/
+	private static Logger logger = LoggerFactory
+			.getLogger(ArchFailureHandler.class);
+	/** 重定向处理对象. **/
+	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+	/** 默认定向页面 **/
+	private String defaultUrl;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception)
 			throws IOException, ServletException {
-		logger.info(exception.getMessage());
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("userid", 1);
-		map.put("reason", exception.getMessage());
-		response.getWriter().write(ResponseUtil.exception(map).toString());
+		logger.info("user : "+exception.getAuthentication().getName() + " login failure");
+		request.setAttribute("error_reason", exception.getMessage());
+		redirectStrategy.sendRedirect(request, response, defaultUrl);
+	}
+
+	public String getDefaultUrl() {
+		return defaultUrl;
+	}
+
+	public void setDefaultUrl(String defaultUrl) {
+		this.defaultUrl = defaultUrl;
 	}
 
 }

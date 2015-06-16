@@ -10,9 +10,9 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service("archAccessDecisionManager")
+@Component
 public class ArchAccessDecisionManager implements AccessDecisionManager {
 
 	@Override
@@ -39,8 +39,8 @@ public class ArchAccessDecisionManager implements AccessDecisionManager {
 				authorityArray = needPermission.split("_");
 				System.out.println("needPermission is " + needPermission);
 				// 用户所拥有的权限authentication
-				if (authorityArray != null && authorityArray.length == 3) {
-					role = authorityArray[1];// 角色信息
+				if (authorityArray != null && authorityArray.length == 2) {
+					role = authorityArray[0];// 角色信息 1 为权限信息
 					for (GrantedAuthority grantedAuthority : authentication
 							.getAuthorities()) {
 						grantAuthorityStr = grantedAuthority.getAuthority();

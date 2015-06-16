@@ -2,40 +2,44 @@ package com.yousoft.service.security.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.yousoft.model.security.view.SecurityUser;
 import com.yousoft.service.security.AuthService;
+import com.yousoft.service.security.UserService;
 
-@Service
+@Component
 public class ArchUserDetailServiceImpl implements UserDetailsService {
-	/**日志记录对象**/
-	private static Logger logger = LoggerFactory.getLogger(ArchUserDetailServiceImpl.class);
-
+	/** 日志记录对象 **/
+	private static Logger logger = LoggerFactory
+			.getLogger(ArchUserDetailServiceImpl.class);
 	@Autowired
 	private AuthService authService;
-	
+	@Autowired
+	private UserService userService;
 
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException {
-		logger.info("loadUserByUserName,username:"+username);
+		logger.info("loadUserByUserName,username:" + username);
 		if (StringUtils.isNotEmpty(username)) {
 			// 传入的username不能Null
 			SecurityUser securityUser = null;
-			try{
-			securityUser = authService
-					.findSecurityUserByLoginCode(username);// 根据登录code查询用户信息对象
-			}catch(Exception ex){
+			try {
+				securityUser = authService
+						.findSecurityUserByLoginCode(username);// 根据登录code查询用户信息对象
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 			if (securityUser == null) {
@@ -51,39 +55,55 @@ public class ArchUserDetailServiceImpl implements UserDetailsService {
 					StringBuffer buffer = new StringBuffer();
 					switch (status) {
 					case 1:
-						buffer.append("当前登录账号被锁定,请联系管理员进行恢复");break;
+						buffer.append("当前登录账号被锁定,请联系管理员进行恢复");
+						break;
 					case 2:
-						buffer.append("当前登录账号已过期,请联系管理员进行恢复");break;
+						buffer.append("当前登录账号已过期,请联系管理员进行恢复");
+						break;
 					case 3:
-						buffer.append("当前登录账号涉嫌异常登录,请联系管理员进行恢复");break;
+						buffer.append("当前登录账号涉嫌异常登录,请联系管理员进行恢复");
+						break;
 					}
-					if(buffer.length()>0){
+					if (buffer.length() > 0) {
 						throw new UsernameNotFoundException(buffer.toString());
 					} else {
-						Collection<GrantedAuthority> grantedAuths = obtionGrantedAuthorities(securityUser.getUserId());  
-				        boolean enables = true;  
-				        boolean accountNonExpired = true;  
-				        boolean credentialsNonExpired = true;  
-				        boolean accountNonLocked = true;  
-				        User userdetail = new User(String.valueOf(securityUser.getUserId()), securityUser.getPassWord(),
-				                enables, accountNonExpired, credentialsNonExpired,
-				                accountNonLocked, grantedAuths);  
-				        return userdetail;  
+						Collection<GrantedAuthority> grantedAuths = obtionGrantedAuthorities(securityUser
+								.getUserId());
+						boolean enables = true;
+						boolean accountNonExpired = true;
+						boolean credentialsNonExpired = true;
+						boolean accountNonLocked = true;
+						User userdetail = new User(String.valueOf(securityUser
+								.getUserId()), securityUser.getPassWord(),
+								enables, accountNonExpired,
+								credentialsNonExpired, accountNonLocked,
+								grantedAuths);
+						return userdetail;
 					}
 				}
 			}
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * 根据用户ID查询
+	 * 
 	 * @param userId
 	 * @return
 	 */
 	private Collection<GrantedAuthority> obtionGrantedAuthorities(int userId) {
-		return new ArrayList<GrantedAuthority>();
+		Collection<GrantedAuthority> authorityList = new ArrayList<GrantedAuthority>();
+		if (userId != 0) {
+			List<Integer> roleIdList = userService
+					.findRoleIDListByUserId(userId);
+			if (roleIdList != null && roleIdList.size() > 0) {
+				for (Integer roleId : roleIdList) {
+					authorityList.add(new SimpleGrantedAuthority(String
+							.valueOf(roleId)));
+				}
+			}
+		}
+		return authorityList;
 	}
-
 }

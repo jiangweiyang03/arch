@@ -31,7 +31,7 @@
 	<mvc:interceptors>
 		<bean class="com.yousoft.service.util.Interceptor" />
 	</mvc:interceptors>
-
+	
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
 	<bean
@@ -130,6 +130,7 @@
 	<!-- 导入activiti流程引擎配置 -->
 	<import resource="arch-process.xml" />
 	
+	<!-- 导入权限控制配置 -->
 	<import resource="arch-security.xml" />
 
 </beans>

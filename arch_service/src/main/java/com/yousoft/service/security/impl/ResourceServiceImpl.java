@@ -49,8 +49,7 @@ public class ResourceServiceImpl implements ResourceService {
 						}
 						/** 将角色与访问权限均作为构造数据进行处理 **/
 						securityConfig = new SecurityConfig(
-								"ROLE_".concat(
-										String.valueOf(resRoleModel.getRoleId()))
+										String.valueOf(resRoleModel.getRoleId())
 										.concat("_")
 										.concat(String.valueOf(resRoleModel
 												.getAuthority())));

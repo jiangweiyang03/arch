@@ -44,7 +44,6 @@ public class ProcessServiceImpl implements ProcessService {
 
 	@Override
 	public String createProcessByRemoteUrl(URL remoteURL) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

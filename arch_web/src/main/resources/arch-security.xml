@@ -43,7 +43,7 @@
 	</http>
 
 	<beans:bean id="successHandler" class="com.yousoft.service.security.impl.ArchSuccessHandler">
-		<beans:property name="defaultUrl" value="/main.jsp" />
+		<beans:property name="defaultUrl" value="/home" />
 	</beans:bean>
 
 	<beans:bean id="failureHandler" class="com.yousoft.service.security.impl.ArchFailureHandler">

@@ -15,6 +15,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.yousoft.model.security.TSysuser;
+import com.yousoft.model.security.view.SessionUser;
 import com.yousoft.service.security.UserService;
 
 public class ArchSuccessHandler implements AuthenticationSuccessHandler {
@@ -36,7 +37,7 @@ public class ArchSuccessHandler implements AuthenticationSuccessHandler {
 		logger.info("userName : " + authentication.getName() + " login success");
 		/**查询用户对象**/
 		TSysuser sysUser = userService.findUserByUserId(Long.valueOf(authentication.getName()));
-		request.getSession().setAttribute("currentuser", sysUser);
+		request.getSession().setAttribute("currentuser", new SessionUser(sysUser));
 		redirectStrategy.sendRedirect(request, response, defaultUrl);
 	}
 

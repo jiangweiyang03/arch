@@ -35,22 +35,38 @@ public class UserController extends AbstractArchController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/user/addUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/modifyUser/{method}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object addUser(@RequestBody AddUserModel addUserModel,
-			HttpServletRequest request, HttpServletResponse response) {
+			@PathVariable String method, HttpServletRequest request,
+			HttpServletResponse response) {
 		if (addUserModel != null
 				&& StringUtils.isNotEmpty(addUserModel.getLogincode())) {
 			SessionUser currentUser = getCurrentUser(request);
 			if (currentUser != null) {
 				long userid = currentUser.getUserId();
-				int result = userService.addUser(addUserModel,
-						addUserModel.getRoleidlist(),
-						addUserModel.getLogincode(), userid);
-				if (result == ArchState.SUCCESS.getState()) {
-					return success("用户添加成功");
+				if ("add".equals(method)) {
+					// 添加基础用户对象
+					int result = userService.addUser(addUserModel,
+							addUserModel.getRoleidlist(),
+							addUserModel.getLogincode(), userid);
+					if (result == ArchState.SUCCESS.getState()) {
+						return success("用户添加成功");
+					} else {
+						return error("用户添加失败");
+					}
+				} else if ("update".equals(method)) {
+					// 更新用户对象信息
+					int result = userService.modifyUser(addUserModel,
+							addUserModel.getRoleidlist(),
+							addUserModel.getLogincode(), userid);
+					if (result == ArchState.SUCCESS.getState()) {
+						return success("用户信息更新成功");
+					} else {
+						return error("用户信息更新失败");
+					}
 				} else {
-					return error("用户添加失败");
+					return error("当前提交的请求无法识别");
 				}
 			} else {
 				return error("用户没有登录");
@@ -61,6 +77,7 @@ public class UserController extends AbstractArchController {
 	}
 
 	@RequestMapping(value = "/user/queryUser/{method}/{value}", method = RequestMethod.POST)
+	@ResponseBody
 	public Object findUser(@PathVariable String method,
 			@PathVariable String value) {
 		if (StringUtils.isNotEmpty(method) && StringUtils.isNotEmpty(value)) {
@@ -80,17 +97,15 @@ public class UserController extends AbstractArchController {
 			List<TSysuser> userList = userService.findUserByMethodAndValue(
 					method, value);
 			if (userList == null || userList.size() == 0) {
-				return error("没有查询到满足条件的数据");
+				return success("没有查询到满足条件的数据");
 			} else if (userList.size() == 1) {
 				return success(userList.get(0));
 			} else {
 				return success(userList);
 			}
 		} else {
-			return error("传入的参数不正确");
+			return success("传入的参数不正确");
 		}
 	}
-	
-	
 
 }

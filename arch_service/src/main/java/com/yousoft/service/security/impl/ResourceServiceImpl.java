@@ -2,6 +2,7 @@ package com.yousoft.service.security.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,12 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.stereotype.Service;
 
+import com.yousoft.client.security.TSysresourcesMapper;
 import com.yousoft.client.security.TSysroleresourceMapper;
+import com.yousoft.model.security.TSysresources;
 import com.yousoft.model.security.view.ResRoleModel;
 import com.yousoft.service.security.ResourceService;
+import com.yousoft.service.util.ArchState;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -25,6 +29,8 @@ public class ResourceServiceImpl implements ResourceService {
 			.getLogger(ResourceServiceImpl.class);
 	@Autowired
 	private TSysroleresourceMapper sysRoleResMapper;
+	@Autowired
+	private TSysresourcesMapper resourcesMapper;
 
 	@Override
 	public Map<String, Collection<ConfigAttribute>> findResourceRoleMap()
@@ -48,11 +54,11 @@ public class ResourceServiceImpl implements ResourceService {
 							athorityArray = new ArrayList<ConfigAttribute>();
 						}
 						/** 将角色与访问权限均作为构造数据进行处理 **/
-						securityConfig = new SecurityConfig(
-										String.valueOf(resRoleModel.getRoleId())
-										.concat("_")
-										.concat(String.valueOf(resRoleModel
-												.getAuthority())));
+						securityConfig = new SecurityConfig(String
+								.valueOf(resRoleModel.getRoleId())
+								.concat("_")
+								.concat(String.valueOf(resRoleModel
+										.getAuthority())));
 						// 权限集合中加入权限配置数据
 						athorityArray.add(securityConfig);
 						authMap.put(resUrl, athorityArray);
@@ -63,6 +69,28 @@ public class ResourceServiceImpl implements ResourceService {
 			}
 		}
 		return authMap;
+	}
+
+	@Override
+	public int addResources(TSysresources resource, Long operatorCode) {
+		if (resource != null && operatorCode != null) {
+			resource.setCreateuser(operatorCode);
+			resource.setCreatetime(new Date());
+			resourcesMapper.insertSelective(resource);
+			return ArchState.SUCCESS.getState();
+		}
+		return ArchState.ERROR.getState();
+	}
+
+	@Override
+	public int updateResources(TSysresources resource, Long operatorCode) {
+		if (resource != null && operatorCode != null) {
+			resource.setUpdatercode(operatorCode);
+			resource.setModifytime(new Date());
+			resourcesMapper.updateByPrimaryKeySelective(resource);
+			return ArchState.SUCCESS.getState();
+		}
+		return ArchState.ERROR.getState();
 	}
 
 }

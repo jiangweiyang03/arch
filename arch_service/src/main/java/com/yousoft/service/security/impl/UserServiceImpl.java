@@ -17,6 +17,7 @@ import com.yousoft.model.security.TSysuser;
 import com.yousoft.model.security.TSysuserExample;
 import com.yousoft.model.security.TSysuserExample.Criteria;
 import com.yousoft.model.security.TSysuserauth;
+import com.yousoft.model.security.TSysuserauthExample;
 import com.yousoft.model.security.TSysuserrole;
 import com.yousoft.model.security.TSysuserroleExample;
 import com.yousoft.service.security.UserService;
@@ -84,6 +85,53 @@ public class UserServiceImpl implements UserService {
 				userRole.setModifytime(new Date());
 				userRoleMapper.insertSelective(userRole);
 			}
+			return ArchState.SUCCESS.getState();
+		} else {
+			return ArchState.ERROR.getState();
+		}
+	}
+
+	@Override
+	public int modifyUser(TSysuser sysUser, List<Integer> roleIdList,
+			String loginCode, Long operatorCode) {
+		if (sysUser != null && sysUser.getUserid() != 0) {
+			/** 根据主键信息更新用户对象 **/
+			sysUser.setModifytime(new Date());
+			sysUser.setUpdatercode(operatorCode);
+			userMapper.updateByPrimaryKeySelective(sysUser);
+			/** 更新用户角色信息 ,先删除当前用户配置的角色信息,再进行赋值处理 **/
+			TSysuserroleExample example = new TSysuserroleExample();
+			TSysuserroleExample.Criteria criteria = example.createCriteria();
+			criteria.andUseridEqualTo(sysUser.getUserid());
+			userRoleMapper.deleteByExample(example);// 将原有的数据删除处理
+			/** 新增当前记录信息 **/
+			TSysuserrole userRole = null;
+			for (Integer roleId : roleIdList) {
+				userRole = new TSysuserrole();
+				userRole.setUserid(sysUser.getUserid());
+				userRole.setRoleid(roleId);
+				userRole.setCreatetime(new Date());
+				userRole.setModifytime(new Date());
+				userRoleMapper.insertSelective(userRole);
+			}
+			/** 更新用户认证信息 **/
+			TSysuserauth userAuth = new TSysuserauth();
+			TSysuserauthExample authExample = new TSysuserauthExample();
+			TSysuserauthExample.Criteria authCriteria = authExample
+					.createCriteria();
+			authCriteria.andUseridEqualTo(sysUser.getUserid());
+			userAuth.setLogincode(loginCode);
+			userAuth.setModifytime(new Date());
+			userAuth.setUpdatercode(operatorCode);
+			userAuthMapper.updateByExampleSelective(userAuth, authExample);
+			/** 更新流程用户信息 **/
+			identityService.deleteUser(sysUser.getUserid().toString());// 删队用户信息
+			UserEntity userEntity = new UserEntity();
+			userEntity.setId(sysUser.getUserid().toString());
+			userEntity.setEmail(sysUser.getEmail());
+			userEntity.setLastName(sysUser.getUsername());
+			identityService.saveUser(userEntity);
+			// 处理成功
 			return ArchState.SUCCESS.getState();
 		} else {
 			return ArchState.ERROR.getState();

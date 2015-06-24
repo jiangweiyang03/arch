@@ -15,7 +15,7 @@
 			targetProject="arch_dao" type="XMLMAPPER" />
 
 
-		<table schema="" tableName="T_SYSUSERAUTH"></table>
+		<table schema="" tableName="T_SYSMENU"></table>
 
 	</context>
 	<!-- <name="useActualColumnNames" value="true"/> -->

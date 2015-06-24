@@ -35,6 +35,19 @@ public interface UserService {
 	 */
 	public int addUser(TSysuser sysUser, List<Integer> roleIdList,
 			String loginCode, Long operatorCode);
+	
+	/**
+	 * 更新用户对象信息及相应的角色信息.
+	 * @param sysUser 需更新的用户对象信息
+	 * @param roleIdList 更新之后的角色ID集合
+	 * @param loginCode 登录Code
+	 * @param operatorCode 操作者ID
+	 * @return 修改信息是否成功
+	 */
+	public int modifyUser(TSysuser sysUser,List<Integer> roleIdList,
+			String loginCode,Long operatorCode);
+	
+	
 
 	/**
 	 * 根据用户ID查询用户对象.

@@ -16,7 +16,7 @@ public class MenuTreeNode {
 	/** 节点名称 **/
 	private String text;
 	/** 子节点集合 **/
-	private List<MenuTreeNode> children = new ArrayList<MenuTreeNode>();;
+	private List<MenuTreeNode> children = new ArrayList<MenuTreeNode>();
 	/** 是否子节点 **/
 	private boolean leaf;
 	/** 节点图标. **/

@@ -132,7 +132,7 @@
 
 
 	<!-- 处理配置常量类 -->
-	<bean id="archConfig" class="com.yousoft.controller.common.ArchConfig">
+	<bean id="archConfig" class="com.yousoft.model.ArchConfig">
 		<property name="AdminUserID" value="${AdminUserID}" />
 	</bean>
 
